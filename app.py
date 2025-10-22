@@ -10,7 +10,8 @@ from PyPDF2 import PdfReader, PdfWriter
 from PIL import Image
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True,
+     allow_headers=["Content-Type", "Authorization"])
 
 # -------------------- Helper: Decrypt PDF if needed --------------------
 def decrypt_pdf_if_needed(pdf_bytes, password=None):
