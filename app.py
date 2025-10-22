@@ -2,6 +2,7 @@
 import io
 import os
 from flask import Flask, request, send_file, jsonify
+from flask_cors import CORS
 from pdf2image import convert_from_bytes
 import numpy as np
 import cv2
@@ -9,6 +10,7 @@ from PyPDF2 import PdfReader, PdfWriter
 from PIL import Image
 
 app = Flask(__name__)
+CORS(app)
 
 # -------------------- Helper: Decrypt PDF if needed --------------------
 def decrypt_pdf_if_needed(pdf_bytes, password=None):
