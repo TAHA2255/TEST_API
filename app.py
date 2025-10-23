@@ -10,8 +10,11 @@ from PyPDF2 import PdfReader, PdfWriter
 from PIL import Image
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True,
-     allow_headers=["Content-Type", "Authorization"])
+# ✅ initialize CORS correctly
+CORS(app, resources={r"/*": {"origins": "*"}}, 
+     supports_credentials=True,
+     allow_headers=["Content-Type", "Authorization"],
+     methods=["GET", "POST", "OPTIONS"])
 
 # -------------------- Helper: Decrypt PDF if needed --------------------
 def decrypt_pdf_if_needed(pdf_bytes, password=None):
@@ -52,7 +55,22 @@ def crop_bottom_half(pil_img, crop_ratio=0.45):
     return Image.fromarray(cropped)
 
 # -------------------- Flask Endpoint --------------------
-@app.route("/crop_aadhaar", methods=["POST"])
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return response
+
+@app.route("/crop_aadhaar", methods=["OPTIONS"])
+
+def crop_aadhaar_preflight():
+    # This ensures browsers get proper CORS headers on preflight
+    response = jsonify({"message": "CORS preflight OK"})
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return response
 def crop_aadhaar():
     if 'file' not in request.files:
         return jsonify({"error": "Missing file"}), 400
