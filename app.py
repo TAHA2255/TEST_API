@@ -77,7 +77,7 @@ def crop_aadhaar():
 
     cropped_imgs = []
     for idx, page in enumerate(pages, 1):
-        cropped = crop_bottom_half(page, crop_ratio=0.25)  # adjust ratio if needed
+        cropped = crop_bottom_half(page, crop_ratio=0.28)  # adjust ratio if needed
         cropped_imgs.append((f"aadhaar_page_{idx}.png", cropped))
 
     if len(cropped_imgs) == 1:
